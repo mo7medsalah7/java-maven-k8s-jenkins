@@ -16,13 +16,24 @@ pipeline {
     // }
 
 
-    // Maven Test
-    stage('Maven Test') {
+    // Maven Unit Test
+    stage('Maven Unit Test') {
       steps{
         script {
           mvnTest()
         }
       }
     }
+
+      // Maven Integration Test
+    stage('Maven Unit Test') {
+      steps{
+        script {
+          mvnIntegrationTest()
+        }
+      }
+    }
+
+
   }
 }
