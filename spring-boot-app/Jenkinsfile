@@ -128,10 +128,10 @@ pipeline {
       GITHUB_USER_NAME="mo7medsalah7"
     }
       steps {
-          def imageTag="${params.imageTag}"
+        script{
+          def imageTag = ${params.imageTag}
           withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
               sh """
-              echo "${imageTag}"
                 git config user.name "Mohamed Salah"
                 git config user.email "m.salah.azim@gmail.com"
                 sed -i "s/replaceImageTag/${imageTag}/g" ./spring-boot-app-manifests/deployment.yml
@@ -141,6 +141,7 @@ pipeline {
 
               """
           }
+        }
       }
   }
 
