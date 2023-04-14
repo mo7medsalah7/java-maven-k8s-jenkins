@@ -20,7 +20,9 @@ pipeline {
     stage('Maven Test') {
       steps{
         script {
-          mvnTest()
+          mvnTest(
+            dest: 'spring-boot-app/*'
+          )
         }
       }
     }
