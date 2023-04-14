@@ -12,66 +12,66 @@ pipeline {
   }
 
   stages {
-    // stage('SCM Checkout') {
-    //   steps {
+    // // stage('SCM Checkout') {
+    // //   steps {
+    // //     script {
+    // //       gitCheckout(
+    // //         branch: "main",
+    // //         url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
+    // //       )
+    // //     }
+    // //   }
+    // // }
+
+
+    // // Maven Unit Test
+    // stage('Maven Unit Test') {
+    // when { expression { params.actions == "create" } }
+    //   steps{
     //     script {
-    //       gitCheckout(
-    //         branch: "main",
-    //         url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
-    //       )
+    //       mvnTest()
     //     }
     //   }
     // }
 
+    //   // Maven Integration Test
+    // stage('Maven Integration Test') {
+    // when { expression { params.actions == "create" } }
+    //   steps{
+    //     script {
+    //       mvnIntegrationTest()
+    //     }
+    //   }
+    // }
 
-    // Maven Unit Test
-    stage('Maven Unit Test') {
-    when { expression { params.actions == "create" } }
-      steps{
-        script {
-          mvnTest()
-        }
-      }
-    }
+    // //  Static Code Analysis Maven
+    // // Jenkins tells Sonarqube to make static code analysis
+    // stage('Maven Static Code Analysis') {
+    // when { expression { params.actions == "create" } }
+    //   steps {
+    //     script {
+    //       // defining var to store credential id
+    //       def SonarQube_Credenital_Id = 'sonarqube'
+    //       // calling method
+    //       staticCodeAnalysis(SonarQube_Credenital_Id)
+    //     }
+    //   }
+    // }
 
-      // Maven Integration Test
-    stage('Maven Integration Test') {
-    when { expression { params.actions == "create" } }
-      steps{
-        script {
-          mvnIntegrationTest()
-        }
-      }
-    }
-
-    //  Static Code Analysis Maven
-    // Jenkins tells Sonarqube to make static code analysis
-    stage('Maven Static Code Analysis') {
-    when { expression { params.actions == "create" } }
-      steps {
-        script {
-          // defining var to store credential id
-          def SonarQube_Credenital_Id = 'sonarqube'
-          // calling method
-          staticCodeAnalysis(SonarQube_Credenital_Id)
-        }
-      }
-    }
-
-    // Quality Gate Status Check
-    //  because Sonarqube reply to Jenkins, it replies if the Quality Gate is ok
-    // if it's ok , we are going to Build the code
-    stage('Quality Gate Status Check') {
-    when { expression { params.actions == "create" } }
-      steps {
-        script {
-          // defining var to store credential id
-          def SonarQube_Credenital_Id = 'sonarqube'
-          // Calling Method
-          QualityGateStatus(SonarQube_Credenital_Id)
-        }
-      }
-    }
+    // // Quality Gate Status Check
+    // //  because Sonarqube reply to Jenkins, it replies if the Quality Gate is ok
+    // // if it's ok , we are going to Build the code
+    // stage('Quality Gate Status Check') {
+    // when { expression { params.actions == "create" } }
+    //   steps {
+    //     script {
+    //       // defining var to store credential id
+    //       def SonarQube_Credenital_Id = 'sonarqube'
+    //       // Calling Method
+    //       QualityGateStatus(SonarQube_Credenital_Id)
+    //     }
+    //   }
+    // }
 
   // Maven Build
     stage('Maven Build') {
