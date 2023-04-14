@@ -159,13 +159,11 @@ pipeline {
     }
     
     steps {
-          sshagent(credentials: ['kubernetes-machine']) {
-            // check if .ssh directory is exist
-            sh """
-            [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
-              ssh -o StrictHostKeyChecking=no root@139.144.52.59
-        """
-          }
+      withCredentials([string(credentialsId: 'K8S_PASSWORD', variable: 'K8S_PASS')]) {
+        sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no root@139.144.52.59
+
+      }
+
       // script {
       //   // Since it's a public repo, so we can apply the deployment file directly
       //   // without any need to authenticate from out kubernetes machine
