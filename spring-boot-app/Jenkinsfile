@@ -75,76 +75,76 @@ pipeline {
     // }
 
   // Maven Build
-    stage('Maven Build') {
-    when { expression { params.actions == "create" } }
-      steps {
-        script {
-          // Calling Method
-          mvnBuild()
-        }
-      }
-    }
+  //   stage('Maven Build') {
+  //   when { expression { params.actions == "create" } }
+  //     steps {
+  //       script {
+  //         // Calling Method
+  //         mvnBuild()
+  //       }
+  //     }
+  //   }
 
-      // Docker Build
-    stage('Docker Build') {
-    when { expression { params.actions == "create" } }
-      steps {
-        script {
-          // Calling Method
-          echo "${params.imageName}"
-          echo "${params.dockerHubUser}"
-          echo "${params.imageTag}"
+  //     // Docker Build
+  //   stage('Docker Build') {
+  //   when { expression { params.actions == "create" } }
+  //     steps {
+  //       script {
+  //         // Calling Method
+  //         echo "${params.imageName}"
+  //         echo "${params.dockerHubUser}"
+  //         echo "${params.imageTag}"
           
 
-          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
-        }
-      }
-    }
+  //         dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
+  //       }
+  //     }
+  //   }
 
-    // Stage - Docker Push 
-    stage('Docker Push to Dockerhub') {
-    when { expression { params.actions == "create" } }
-      steps {
-        script {
-          // Calling Method
-          echo "${params.imageName}"
-          echo "${params.dockerHubUser}"
-          echo "${params.imageTag}"
-          dockerImagePush("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
-        }
-      }
-    }
+  //   // Stage - Docker Push 
+  //   stage('Docker Push to Dockerhub') {
+  //   when { expression { params.actions == "create" } }
+  //     steps {
+  //       script {
+  //         // Calling Method
+  //         echo "${params.imageName}"
+  //         echo "${params.dockerHubUser}"
+  //         echo "${params.imageTag}"
+  //         dockerImagePush("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
+  //       }
+  //     }
+  //   }
 
 
-    //Stage -  Update Deployment file on Version Control System
-    // We are on the Jenkins Server - we need to authenticate to Github
-    // so we can Pull and Push to Github account
-    // 1- Configure Git on That Machine
+  //   //Stage -  Update Deployment file on Version Control System
+  //   // We are on the Jenkins Server - we need to authenticate to Github
+  //   // so we can Pull and Push to Github account
+  //   // 1- Configure Git on That Machine
   
-    stage('Update Deployment File') {
-    when { expression { params.actions == "create" } }
-    environment {
-      GITHUB_REPO_NAME="java-maven-k8s-jenkins"
-      GITHUB_USER_NAME="mo7medsalah7"
-    }
-      steps {
+  //   stage('Update Deployment File') {
+  //   when { expression { params.actions == "create" } }
+  //   environment {
+  //     GITHUB_REPO_NAME="java-maven-k8s-jenkins"
+  //     GITHUB_USER_NAME="mo7medsalah7"
+  //   }
+  //     steps {
 
-          withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
-              sh """
-                git config user.name "Mohamed Salah"
-                git config user.email "m.salah.azim@gmail.com"
-                sed -i 's/replaceImageTag/${params.imageName}/g' ./spring-boot-app-manifests/deployment.yml
-                git add ./spring-boot-app-manifests/deployment.yml
-                git add .
-                git commit -m "Update deployment image to version ${params.imageTag}"
-                git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME} HEAD:main
+  //         withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
+  //             sh """
+  //               git config user.name "Mohamed Salah"
+  //               git config user.email "m.salah.azim@gmail.com"
+  //               sed -i 's/replaceImageTag/${params.imageName}/g' ./spring-boot-app-manifests/deployment.yml
+  //               git add ./spring-boot-app-manifests/deployment.yml
+  //               git add .
+  //               git commit -m "Update deployment image to version ${params.imageTag}"
+  //               git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME} HEAD:main
 
-              """
-          }
+  //             """
+  //         }
           
         
-      }
-  }
+  //     }
+  // }
 
   // Stage - SSH to the Kubernetes Machine 
   // Apply deployment.yml file
@@ -157,13 +157,18 @@ pipeline {
       GITHUB_USER_NAME="mo7medsalah7"
       MANIFESTS_DIRECTORY="spring-boot-app-manifests"
     }
+    
     steps {
-      script {
-        loginToKubernetes("${params.k8s_ssh_credentials}")
-        // Since it's a public repo, so we can apply the deployment file directly
-        // without any need to authenticate from out kubernetes machine
-        sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
-      }
+          sshagent(credentials: ['kubernetes-machine']) {
+            // check if .ssh directory is exist
+            loginToKubernetes("${params.k8s_ssh_credentials}")
+            echo 'Hostname' is $HOSTNAME
+          }
+      // script {
+      //   // Since it's a public repo, so we can apply the deployment file directly
+      //   // without any need to authenticate from out kubernetes machine
+      //   sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
+      // }
     }
     }
   }
