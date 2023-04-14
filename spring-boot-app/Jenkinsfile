@@ -45,10 +45,26 @@ pipeline {
     when { expression { params.actions == "create" } }
       steps {
         script {
+          // defining var to store credential id
           def SonarQube_Credenital_Id = 'sonarqube'
+          // calling method
           staticCodeAnalysis(SonarQube_Credenital_Id)
         }
       }
+    }
+
+    // Quality Gate Status Check
+    stage('Quality Gate Status Check') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // defining var to store credential id
+          def SonarQube_Credenital_Id = 'sonarqube'
+          // Calling Method
+          QualityGateStatus(SonarQube_Credenital_Id)
+        }
+      }
+
     }
   }
 }
