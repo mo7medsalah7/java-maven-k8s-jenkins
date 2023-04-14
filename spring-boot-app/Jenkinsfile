@@ -99,5 +99,23 @@ pipeline {
         }
       }
     }
+
+          // Docker Push
+    stage('Docker Push to Dockerhub') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // Calling Method
+          echo "${params.imageName}"
+          echo "${params.dockerHubUser}"
+          echo "${params.imageTag}"
+
+
+          dockerImagePush("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
+        }
+      }
+    }
+
+
   }
 }
