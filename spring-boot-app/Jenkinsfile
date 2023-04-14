@@ -9,6 +9,7 @@ pipeline {
     string(name: 'imageTag', description: ' tag of the docker build', defaultValue: 'v1')
     string(name: 'dockerHubUser', description: ' name of the application', defaultValue: 'mo7medsalah7')
 
+    string(name: 'k8s_ssh_credentials', description:'info about the kubernetes machine', defaultValue: 'root@139.144.52.59')
   }
 
   stages {
@@ -100,7 +101,7 @@ pipeline {
       }
     }
 
-          // Docker Push
+    // Stage - Docker Push 
     stage('Docker Push to Dockerhub') {
     when { expression { params.actions == "create" } }
       steps {
@@ -109,13 +110,56 @@ pipeline {
           echo "${params.imageName}"
           echo "${params.dockerHubUser}"
           echo "${params.imageTag}"
-
-
           dockerImagePush("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
         }
       }
     }
 
 
+    //Stage -  Update Deployment file on Version Control System
+    // We are on the Jenkins Server - we need to authenticate to Github
+    // so we can Pull and Push to Github account
+    // 1- Configure Git on That Machine
+  
+    stage('Update Deployment File') {
+      script {
+
+    withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
+        sh """
+          git config user.name "Mohamed Salah"
+          git config user.email "m.salah.azim@gmail.com"
+          BUILD_NUMBER=${BUILD_NUMBER}
+          sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" ./spring-boot-app-manifests/deployment.yml
+          git add ./spring-boot-app-manifests/deployment.yml
+          git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+          git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+
+        """
+    }
+      }
+
+
   }
+
+  // Stage - SSH to the Kubernetes Machine 
+  // Apply deployment.yml file
+    stage('SSH to Kubernetes') {
+      // login_credentials > variable Example = "root@IP-ADDRESS"
+      // ssh root@IP-ADDRESS
+      environment {
+        GITHUB_REPO_NAME=java-maven-k8s-jenkins
+        GITHUB_USER_NAME=mo7medsalah7
+        MANIFESTS_DIRECTORY=spring-boot-app-manifests
+      }
+      script {
+        loginToKubernetes("${params.k8s_ssh_credentials}")
+        // Since it's a public repo, so we can apply the deployment file directly
+        // without any need to authenticate from out kubernetes machine
+        sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
+      }
+    }
+
+
+
+
 }
