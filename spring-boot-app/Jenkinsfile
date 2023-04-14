@@ -161,7 +161,7 @@ pipeline {
     steps {
       withCredentials([string(credentialsId: 'K8S_PASSWORD', variable: 'K8S_PASS')]) {
         sh """
-          sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no root@139.144.52.59 "kubectl apply https://github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME}/blob/main/${MANIFESTS_DIRECTORY}/deployment.yml"
+          sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no root@139.144.52.59 "kubectl apply https://github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME}/main/${MANIFESTS_DIRECTORY}/deployment.yml"
         """
 
       }
