@@ -91,9 +91,11 @@ pipeline {
         script {
           // Calling Method
           echo "${params.imageName}"
-          echo "${params.dockerhunUser}"
+          echo "${params.dockerHubUser}"
+          echo "${params.imageTag}"
 
-          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerhunUser}")
+
+          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
         }
       }
     }
