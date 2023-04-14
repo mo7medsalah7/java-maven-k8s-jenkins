@@ -1,4 +1,4 @@
-@Library('my-shared-library')
+@Library('my-shared-library') _
 
 pipeline {
   agent any
@@ -12,6 +12,14 @@ pipeline {
             url: "https://github.com/mo7medsalah7/java-maven-jenkins-k8s"
           )
         }
+      }
+    }
+
+
+    // Maven Test
+    stage('Maven Test') {
+      script {
+
       }
     }
   }
