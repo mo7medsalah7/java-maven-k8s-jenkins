@@ -128,7 +128,6 @@ pipeline {
       GITHUB_USER_NAME="mo7medsalah7"
     }
       steps {
-          script {
 
           withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
               sh """
@@ -142,7 +141,7 @@ pipeline {
 
               """
           }
-          }
+          
         
       }
   }
