@@ -145,11 +145,11 @@ pipeline {
     when { expression { params.actions == "create" } }
       // login_credentials > variable Example = "root@IP-ADDRESS"
       // ssh root@IP-ADDRESS
-      environment {
-        GITHUB_REPO_NAME=java-maven-k8s-jenkins
-        GITHUB_USER_NAME=mo7medsalah7
-        MANIFESTS_DIRECTORY=spring-boot-app-manifests
-      }
+    environment {
+      GITHUB_REPO_NAME="java-maven-k8s-jenkins"
+      GITHUB_USER_NAME="mo7medsalah7"
+      MANIFESTS_DIRECTORY="spring-boot-app-manifests"
+    }
       script {
         loginToKubernetes("${params.k8s_ssh_credentials}")
         // Since it's a public repo, so we can apply the deployment file directly
