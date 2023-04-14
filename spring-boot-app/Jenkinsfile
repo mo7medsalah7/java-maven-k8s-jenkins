@@ -164,7 +164,6 @@ pipeline {
             sh """
             [ -d ~/.ssh ] || mkdir ~/.ssh && chmod 0700 ~/.ssh
               ssh -o StrictHostKeyChecking=no root@139.144.52.59
-            'echo "Hostname" is $HOSTNAME'
         """
           }
       // script {
