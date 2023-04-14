@@ -140,7 +140,7 @@ pipeline {
 
               """
           }
-      
+      }
   }
 
   // Stage - SSH to the Kubernetes Machine 
