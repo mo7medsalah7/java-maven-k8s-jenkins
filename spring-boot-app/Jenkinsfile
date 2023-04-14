@@ -133,7 +133,7 @@ pipeline {
                 git config user.name "Mohamed Salah"
                 git config user.email "m.salah.azim@gmail.com"
                 sed -i "s/replaceImageTag/${params.imageTag}/g" ./spring-boot-app-manifests/deployment.yml
-                git add ./spring-boot-app-manifests/deployment.yml
+                git add .
                 git commit -m "Update deployment image to version ${params.imageTag}"
                 git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME} HEAD:main
 
