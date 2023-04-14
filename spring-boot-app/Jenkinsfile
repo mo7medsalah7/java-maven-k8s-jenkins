@@ -21,7 +21,7 @@ pipeline {
       steps{
         script {
           mvnTest(
-            dest: 'spring-boot-app/*'
+            dest: './spring-boot-app/pom.xml'
           )
         }
       }
