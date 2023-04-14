@@ -9,7 +9,7 @@ pipeline {
         script {
           gitCheckout(
             branch: "main",
-            url: "https://github.com/mo7medsalah7/java-maven-jenkins-k8s"
+            url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
           )
         }
       }
