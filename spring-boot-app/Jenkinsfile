@@ -160,14 +160,14 @@ pipeline {
     
     steps {
       withCredentials([string(credentialsId: 'K8S_PASSWORD', variable: 'K8S_PASS')]) {
-        sh 'sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no root@139.144.52.59'
+        sh 'sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no ${params.k8s_ssh_credentials}'
+        sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
 
       }
 
       // script {
       //   // Since it's a public repo, so we can apply the deployment file directly
       //   // without any need to authenticate from out kubernetes machine
-      //   sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
       // }
     }
     }
