@@ -90,7 +90,7 @@ pipeline {
       steps {
         script {
           // Calling Method
-          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerhunUser}")
+          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
         }
       }
     }
