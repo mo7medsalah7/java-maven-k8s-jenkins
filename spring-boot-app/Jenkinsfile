@@ -122,28 +122,27 @@ pipeline {
     // 1- Configure Git on That Machine
   
     stage('Update Deployment File') {
+    when { expression { params.actions == "create" } }
       script {
+        withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
+            sh """
+              git config user.name "Mohamed Salah"
+              git config user.email "m.salah.azim@gmail.com"
+              BUILD_NUMBER=${BUILD_NUMBER}
+              sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" ./spring-boot-app-manifests/deployment.yml
+              git add ./spring-boot-app-manifests/deployment.yml
+              git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+              git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
 
-    withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
-        sh """
-          git config user.name "Mohamed Salah"
-          git config user.email "m.salah.azim@gmail.com"
-          BUILD_NUMBER=${BUILD_NUMBER}
-          sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" ./spring-boot-app-manifests/deployment.yml
-          git add ./spring-boot-app-manifests/deployment.yml
-          git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-          git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-
-        """
-    }
+            """
+        }
       }
-
-
   }
 
   // Stage - SSH to the Kubernetes Machine 
   // Apply deployment.yml file
     stage('SSH to Kubernetes') {
+    when { expression { params.actions == "create" } }
       // login_credentials > variable Example = "root@IP-ADDRESS"
       // ssh root@IP-ADDRESS
       environment {
@@ -158,8 +157,5 @@ pipeline {
         sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
       }
     }
-
-
-
-
-}
+  }
+  }
