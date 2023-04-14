@@ -6,7 +6,7 @@ pipeline {
   parameters {
     choice(name:'actions', choices: 'create\ndelete', description: 'Choose Create or Destroy')
     string(name: 'imageName', description: ' name of the docker build', defaultValue: 'java-app')
-    string(name: 'imageTag', description: ' tag of the docker build', defaultValue: '${BUILD_NUMBER}')
+    string(name: 'imageTag', description: ' tag of the docker build', defaultValue: 'v1')
     string(name: 'dockerHubUser', description: ' name of the application', defaultValue: 'mo7medsalah7')
 
     string(name: 'k8s_ssh_credentials', description:'info about the kubernetes machine', defaultValue: 'root@139.144.52.59')
@@ -94,7 +94,7 @@ pipeline {
           echo "${params.imageName}"
           echo "${params.dockerHubUser}"
           echo "${params.imageTag}"
-
+          
 
           dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
         }
@@ -132,10 +132,10 @@ pipeline {
               sh """
                 git config user.name "Mohamed Salah"
                 git config user.email "m.salah.azim@gmail.com"
-                BUILD_NUMBER=${BUILD_NUMBER}
-                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" ./spring-boot-app-manifests/deployment.yml
+                def imageTag="${params.imageTag}"
+                sed -i "s/replaceImageTag/${imageTag}/g" ./spring-boot-app-manifests/deployment.yml
                 git add ./spring-boot-app-manifests/deployment.yml
-                git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                git commit -m "Update deployment image to version ${imageTag}"
                 git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME} HEAD:main
 
               """
