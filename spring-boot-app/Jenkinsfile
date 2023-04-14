@@ -4,16 +4,16 @@ pipeline {
   agent any
 
   stages {
-    stage('SCM Checkout') {
-      steps {
-        script {
-          gitCheckout(
-            branch: "main",
-            url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
-          )
-        }
-      }
-    }
+    // stage('SCM Checkout') {
+    //   steps {
+    //     script {
+    //       gitCheckout(
+    //         branch: "main",
+    //         url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
+    //       )
+    //     }
+    //   }
+    // }
 
 
     // Maven Test
