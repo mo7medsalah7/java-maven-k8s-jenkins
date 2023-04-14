@@ -3,6 +3,10 @@
 pipeline {
   agent any
 
+  parameters {
+    choice(name:'actions', choices: 'create\ndelete', description: 'Choose Create or Destroy')
+  }
+
   stages {
     // stage('SCM Checkout') {
     //   steps {
@@ -18,6 +22,7 @@ pipeline {
 
     // Maven Unit Test
     stage('Maven Unit Test') {
+    when { expression { params.actions == "create" } }
       steps{
         script {
           mvnTest()
@@ -27,6 +32,7 @@ pipeline {
 
       // Maven Integration Test
     stage('Maven Integration Test') {
+    when { expression { params.actions == "create" } }
       steps{
         script {
           mvnIntegrationTest()
@@ -34,6 +40,14 @@ pipeline {
       }
     }
 
-
+    //  Static Code Analysis Maven
+    stage('Maven Static Code Analysis') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          staticCodeAnalysis()
+        }
+      }
+    }
   }
 }
