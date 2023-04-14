@@ -123,23 +123,24 @@ pipeline {
   
     stage('Update Deployment File') {
     when { expression { params.actions == "create" } }
-    steps {
-
-      script {
-        withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
-            sh """
-              git config user.name "Mohamed Salah"
-              git config user.email "m.salah.azim@gmail.com"
-              BUILD_NUMBER=${BUILD_NUMBER}
-              sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" ./spring-boot-app-manifests/deployment.yml
-              git add ./spring-boot-app-manifests/deployment.yml
-              git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-              git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-
-            """
-        }
-      }
+    environment {
+      GITHUB_REPO_NAME="java-maven-k8s-jenkins"
+      GITHUB_USER_NAME="mo7medsalah7"
     }
+      steps {
+          withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
+              sh """
+                git config user.name "Mohamed Salah"
+                git config user.email "m.salah.azim@gmail.com"
+                BUILD_NUMBER=${BUILD_NUMBER}
+                sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" ./spring-boot-app-manifests/deployment.yml
+                git add ./spring-boot-app-manifests/deployment.yml
+                git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+                git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+
+              """
+          }
+      
   }
 
   // Stage - SSH to the Kubernetes Machine 
