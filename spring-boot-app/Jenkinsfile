@@ -162,7 +162,7 @@ pipeline {
           sshagent(credentials: ['kubernetes-machine']) {
             // check if .ssh directory is exist
             loginToKubernetes("${params.k8s_ssh_credentials}")
-            echo 'Hostname' is $HOSTNAME
+            sh 'echo "Hostname" is $HOSTNAME'
           }
       // script {
       //   // Since it's a public repo, so we can apply the deployment file directly
