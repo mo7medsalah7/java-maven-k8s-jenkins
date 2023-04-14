@@ -123,6 +123,8 @@ pipeline {
   
     stage('Update Deployment File') {
     when { expression { params.actions == "create" } }
+    steps {
+
       script {
         withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
             sh """
@@ -137,6 +139,7 @@ pipeline {
             """
         }
       }
+    }
   }
 
   // Stage - SSH to the Kubernetes Machine 
@@ -150,12 +153,14 @@ pipeline {
       GITHUB_USER_NAME="mo7medsalah7"
       MANIFESTS_DIRECTORY="spring-boot-app-manifests"
     }
+    steps {
       script {
         loginToKubernetes("${params.k8s_ssh_credentials}")
         // Since it's a public repo, so we can apply the deployment file directly
         // without any need to authenticate from out kubernetes machine
         sh 'kubectl apply https://github.com/${GITHUB_REPO_NAME}/${GITHUB_USER_NAME}/tree/main/${MANIFESTS_DIRECTORY}/deployment.yml'
       }
+    }
     }
   }
   }
