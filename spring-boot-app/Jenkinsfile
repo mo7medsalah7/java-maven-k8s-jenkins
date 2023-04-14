@@ -160,7 +160,7 @@ pipeline {
     
     steps {
       withCredentials([string(credentialsId: 'K8S_PASSWORD', variable: 'K8S_PASS')]) {
-        sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no root@139.144.52.59
+        sh 'sshpass -p ${K8S_PASS} ssh -o StrictHostKeyChecking=no root@139.144.52.59'
 
       }
 
