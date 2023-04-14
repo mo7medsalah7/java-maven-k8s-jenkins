@@ -75,15 +75,15 @@ pipeline {
     // }
 
   // Maven Build
-    // stage('Maven Build') {
-    // when { expression { params.actions == "create" } }
-    //   steps {
-    //     script {
-    //       // Calling Method
-    //       mvnBuild()
-    //     }
-    //   }
-    // }
+    stage('Maven Build') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // Calling Method
+          mvnBuild()
+        }
+      }
+    }
 
       // Docker Build
     stage('Docker Build') {
