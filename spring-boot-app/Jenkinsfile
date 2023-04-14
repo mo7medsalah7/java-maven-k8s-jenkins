@@ -74,15 +74,15 @@ pipeline {
     // }
 
   // Maven Build
-    stage('Maven Build') {
-    when { expression { params.actions == "create" } }
-      steps {
-        script {
-          // Calling Method
-          mvnBuild()
-        }
-      }
-    }
+    // stage('Maven Build') {
+    // when { expression { params.actions == "create" } }
+    //   steps {
+    //     script {
+    //       // Calling Method
+    //       mvnBuild()
+    //     }
+    //   }
+    // }
 
       // Docker Build
     stage('Docker Build') {
@@ -90,7 +90,10 @@ pipeline {
       steps {
         script {
           // Calling Method
-          dockerBuild('java-app', 'v1', 'mo7medsalah7')
+          echo "${params.imageName}"
+          echo "${params.dockerhunUser}"
+
+          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerhunUser}")
         }
       }
     }
