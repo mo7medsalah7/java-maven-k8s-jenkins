@@ -13,138 +13,138 @@ pipeline {
   }
 
   stages {
-    // // stage('SCM Checkout') {
-    // //   steps {
-    // //     script {
-    // //       gitCheckout(
-    // //         branch: "main",
-    // //         url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
-    // //       )
-    // //     }
-    // //   }
-    // // }
+    stage('SCM Checkout') {
+      steps {
+        script {
+          gitCheckout(
+            branch: "main",
+            url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
+          )
+        }
+      }
+    }
 
 
-    // // Maven Unit Test
-    // stage('Maven Unit Test') {
-    // when { expression { params.actions == "create" } }
-    //   steps{
-    //     script {
-    //       mvnTest()
-    //     }
-    //   }
-    // }
+    // Maven Unit Test
+    stage('Maven Unit Test') {
+    when { expression { params.actions == "create" } }
+      steps{
+        script {
+          mvnTest()
+        }
+      }
+    }
 
-    //   // Maven Integration Test
-    // stage('Maven Integration Test') {
-    // when { expression { params.actions == "create" } }
-    //   steps{
-    //     script {
-    //       mvnIntegrationTest()
-    //     }
-    //   }
-    // }
+      // Maven Integration Test
+    stage('Maven Integration Test') {
+    when { expression { params.actions == "create" } }
+      steps{
+        script {
+          mvnIntegrationTest()
+        }
+      }
+    }
 
-    // //  Static Code Analysis Maven
-    // // Jenkins tells Sonarqube to make static code analysis
-    // stage('Maven Static Code Analysis') {
-    // when { expression { params.actions == "create" } }
-    //   steps {
-    //     script {
-    //       // defining var to store credential id
-    //       def SonarQube_Credenital_Id = 'sonarqube'
-    //       // calling method
-    //       staticCodeAnalysis(SonarQube_Credenital_Id)
-    //     }
-    //   }
-    // }
+    //  Static Code Analysis Maven
+    // Jenkins tells Sonarqube to make static code analysis
+    stage('Maven Static Code Analysis') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // defining var to store credential id
+          def SonarQube_Credenital_Id = 'sonarqube'
+          // calling method
+          staticCodeAnalysis(SonarQube_Credenital_Id)
+        }
+      }
+    }
 
-    // // Quality Gate Status Check
-    // //  because Sonarqube reply to Jenkins, it replies if the Quality Gate is ok
-    // // if it's ok , we are going to Build the code
-    // stage('Quality Gate Status Check') {
-    // when { expression { params.actions == "create" } }
-    //   steps {
-    //     script {
-    //       // defining var to store credential id
-    //       def SonarQube_Credenital_Id = 'sonarqube'
-    //       // Calling Method
-    //       QualityGateStatus(SonarQube_Credenital_Id)
-    //     }
-    //   }
-    // }
+    // Quality Gate Status Check
+    //  because Sonarqube reply to Jenkins, it replies if the Quality Gate is ok
+    // if it's ok , we are going to Build the code
+    stage('Quality Gate Status Check') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // defining var to store credential id
+          def SonarQube_Credenital_Id = 'sonarqube'
+          // Calling Method
+          QualityGateStatus(SonarQube_Credenital_Id)
+        }
+      }
+    }
 
-  // Maven Build
-  //   stage('Maven Build') {
-  //   when { expression { params.actions == "create" } }
-  //     steps {
-  //       script {
-  //         // Calling Method
-  //         mvnBuild()
-  //       }
-  //     }
-  //   }
+  Maven Build
+    stage('Maven Build') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // Calling Method
+          mvnBuild()
+        }
+      }
+    }
 
-  //     // Docker Build
-  //   stage('Docker Build') {
-  //   when { expression { params.actions == "create" } }
-  //     steps {
-  //       script {
-  //         // Calling Method
-  //         echo "${params.imageName}"
-  //         echo "${params.dockerHubUser}"
-  //         echo "${params.imageTag}"
+      // Docker Build
+    stage('Docker Build') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // Calling Method
+          echo "${params.imageName}"
+          echo "${params.dockerHubUser}"
+          echo "${params.imageTag}"
           
 
-  //         dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
-  //       }
-  //     }
-  //   }
+          dockerBuild("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
+        }
+      }
+    }
 
-  //   // Stage - Docker Push 
-  //   stage('Docker Push to Dockerhub') {
-  //   when { expression { params.actions == "create" } }
-  //     steps {
-  //       script {
-  //         // Calling Method
-  //         echo "${params.imageName}"
-  //         echo "${params.dockerHubUser}"
-  //         echo "${params.imageTag}"
-  //         dockerImagePush("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
-  //       }
-  //     }
-  //   }
+    // Stage - Docker Push 
+    stage('Docker Push to Dockerhub') {
+    when { expression { params.actions == "create" } }
+      steps {
+        script {
+          // Calling Method
+          echo "${params.imageName}"
+          echo "${params.dockerHubUser}"
+          echo "${params.imageTag}"
+          dockerImagePush("${params.imageName}", "${params.imageTag}", "${params.dockerHubUser}")
+        }
+      }
+    }
 
 
-  //   //Stage -  Update Deployment file on Version Control System
-  //   // We are on the Jenkins Server - we need to authenticate to Github
-  //   // so we can Pull and Push to Github account
-  //   // 1- Configure Git on That Machine
+    //Stage -  Update Deployment file on Version Control System
+    // We are on the Jenkins Server - we need to authenticate to Github
+    // so we can Pull and Push to Github account
+    // 1- Configure Git on That Machine
   
-  //   stage('Update Deployment File') {
-  //   when { expression { params.actions == "create" } }
-  //   environment {
-  //     GITHUB_REPO_NAME="java-maven-k8s-jenkins"
-  //     GITHUB_USER_NAME="mo7medsalah7"
-  //   }
-  //     steps {
+    stage('Update Deployment File') {
+    when { expression { params.actions == "create" } }
+    environment {
+      GITHUB_REPO_NAME="java-maven-k8s-jenkins"
+      GITHUB_USER_NAME="mo7medsalah7"
+    }
+      steps {
 
-  //         withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
-  //             sh """
-  //               git config user.name "Mohamed Salah"
-  //               git config user.email "m.salah.azim@gmail.com"
-  //               sed -i 's/replaceImageTag/${params.imageName}/g' ./spring-boot-app-manifests/deployment.yml
-  //               git add ./spring-boot-app-manifests/deployment.yml
-  //               git add .
-  //               git commit -m "Update deployment image to version ${params.imageTag}"
-  //               git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME} HEAD:main
+          withCredentials([string(credentialsId: 'github-secret', variable: 'GITHUB_TOKEN')]) {
+              sh """
+                git config user.name "Mohamed Salah"
+                git config user.email "m.salah.azim@gmail.com"
+                sed -i 's/replaceImageTag/${params.imageName}/g' ./spring-boot-app-manifests/deployment.yml
+                git add ./spring-boot-app-manifests/deployment.yml
+                git add .
+                git commit -m "Update deployment image to version ${params.imageTag}"
+                git push https://${GITHUB_TOKEN}@github.com/${GITHUB_USER_NAME}/${GITHUB_REPO_NAME} HEAD:main
 
-  //             """
-  //         }
+              """
+          }
           
         
-  //     }
-  // }
+      }
+  }
 
   // Stage - SSH to the Kubernetes Machine 
   // Apply deployment.yml file
@@ -166,10 +166,6 @@ pipeline {
 
       }
 
-      // script {
-      //   // Since it's a public repo, so we can apply the deployment file directly
-      //   // without any need to authenticate from out kubernetes machine
-      // }
     }
     }
   }
