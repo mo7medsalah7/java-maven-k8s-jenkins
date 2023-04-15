@@ -13,16 +13,16 @@ pipeline {
   }
 
   stages {
-    stage('SCM Checkout') {
-      steps {
-        script {
-          gitCheckout(
-            branch: "main",
-            url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
-          )
-        }
-      }
-    }
+    // stage('SCM Checkout') {
+    //   steps {
+    //     script {
+    //       gitCheckout(
+    //         branch: "main",
+    //         url: "https://github.com/mo7medsalah7/java-maven-k8s-jenkins"
+    //       )
+    //     }
+    //   }
+    // }
 
 
     // Maven Unit Test
@@ -74,7 +74,7 @@ pipeline {
       }
     }
 
-  Maven Build
+  // Maven Build
     stage('Maven Build') {
     when { expression { params.actions == "create" } }
       steps {
